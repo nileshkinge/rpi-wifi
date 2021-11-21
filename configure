@@ -117,6 +117,7 @@ $([ $AP_PASSPHRASE ] && echo "wpa_passphrase=${AP_PASSPHRASE}")
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP CCMP
 rsn_pairwise=CCMP
+ignore_ssid_broadcast = 0
 EOF
 
 # Populate `/etc/default/hostapd`
@@ -125,17 +126,17 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 EOF
 
 # Populate `/etc/wpa_supplicant/wpa_supplicant.conf`
-sudo bash -c 'cat > /etc/wpa_supplicant/wpa_supplicant.conf' << EOF
-country=US
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
+#sudo bash -c 'cat > /etc/wpa_supplicant/wpa_supplicant.conf' << EOF
+#country=US
+#ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+#update_config=1
 
-network={
-    ssid="${CLIENT_SSID}"
-    $([ $CLIENT_PASSPHRASE ] && echo "psk=\"${CLIENT_PASSPHRASE}\"")
-    id_str="AP1"
-}
-EOF
+#network={
+#    ssid="${CLIENT_SSID}"
+#    $([ $CLIENT_PASSPHRASE ] && echo "psk=\"${CLIENT_PASSPHRASE}\"")
+#    id_str="AP1"
+#}
+#EOF
 
 # Populate `/etc/network/interfaces`
 sudo bash -c 'cat > /etc/network/interfaces' << EOF
@@ -160,6 +161,7 @@ EOF
 
 # Populate `/bin/start_wifi.sh`
 sudo bash -c 'cat > /bin/rpi-wifi.sh' << EOF
+#!/bin/bash
 echo 'Starting Wifi AP and client...'
 sleep 30
 sudo ifdown --force wlan0
